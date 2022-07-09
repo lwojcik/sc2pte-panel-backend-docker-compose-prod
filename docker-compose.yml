@@ -1,8 +1,8 @@
 services:
   panel-backend:
     image: sc2pte/panel-backend:1.0.2298
-    container_name: sc2ptepanel
-    hostname: sc2ptepanel
+    container_name: sc2pte-panel-backend
+    hostname: -panel-backend
     ports:
       - ${SC2PTE_NODE_PORT}:${SC2PTE_NODE_PORT}
     depends_on:
@@ -25,10 +25,10 @@ services:
     volumes:
       - mongodb_data_container:/data/db
     ports:
-      - "27017-27019:27017-27019"
+      - 27017:27017
 
   redis:
-    image: "redis:alpine"
+    image: redis:alpine
     container_name: redis
     hostname: redis
     restart: always
@@ -52,6 +52,9 @@ services:
       - SAS_REDIS_HOST=${SC2PTE_REDIS_HOST}
       - SAS_REDIS_DB=1
       - SAS_BAS_URL=http://bas:3003
+    depends_on:
+      - redis
+      - bas
 
   bas:
     image: sc2pte/bnet-auth-service:2.0.75
@@ -69,6 +72,8 @@ services:
       - BAS_REDIS_ENABLE=true
       - BAS_REDIS_HOST=${SC2PTE_REDIS_HOST}
       - BAS_REDIS_DB=2
+    depends_on:
+      - redis
 
 volumes:
   mongodb_data_container:
