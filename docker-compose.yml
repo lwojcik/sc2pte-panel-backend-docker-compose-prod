@@ -1,10 +1,21 @@
 services:
   panel-backend:
-    image: sc2pte/panel-backend:1.0.2298
+    image: sc2pte/panel-backend:1.0.2308
     container_name: sc2pte-panel-backend
-    hostname: -panel-backend
+    hostname: panel-backend
     ports:
       - ${SC2PTE_NODE_PORT}:${SC2PTE_NODE_PORT}
+    environment:
+      NODE_ENV: production
+      SC2PTE_NODE_PORT: 3001
+      SC2PTE_SAS_URL: http://sas:3002
+      SC2PTE_REDIS_ENABLE: true
+      SC2PTE_REDIS_HOST: redis
+      SC2PTE_REDIS_PORT: 6379
+      SC2PTE_REDIS_CACHE_SEGMENT: sc2pte2
+      SC2PTE_REDIS_TTL_SECS: 1800
+      SC2PTE_CLOUDFLARE_ENABLE: true
+      SC2PTE_BATTLENET_REGION: us
     depends_on:
       - mongodb
       - redis
@@ -43,15 +54,15 @@ services:
     ports:
       - 3002:3002
     environment:
-      - NODE_ENV=production
-      - SAS_APP_PORT=3002
-      - SAS_BATTLENET_REGION=${SC2PTE_BATTLENET_REGION}
-      - SAS_BATTLENET_CLIENT_ID=${SC2PTE_BATTLENET_CLIENT_ID}
-      - SAS_BATTLENET_CLIENT_SECRET=${SC2PTE_BATTLENET_CLIENT_SECRET}
-      - SAS_REDIS_ENABLE=true
-      - SAS_REDIS_HOST=${SC2PTE_REDIS_HOST}
-      - SAS_REDIS_DB=1
-      - SAS_BAS_URL=http://bas:3003
+      NODE_ENV: production
+      SAS_APP_PORT: 3002
+      SAS_BATTLENET_REGION: ${SC2PTE_BATTLENET_REGION}
+      SAS_BATTLENET_CLIENT_ID: ${SC2PTE_BATTLENET_CLIENT_ID}
+      SAS_BATTLENET_CLIENT_SECRET: ${SC2PTE_BATTLENET_CLIENT_SECRET}
+      SAS_REDIS_ENABLE: true
+      SAS_REDIS_HOST: ${SC2PTE_REDIS_HOST}
+      SAS_REDIS_DB: 1
+      SAS_BAS_URL: http://bas:3003
     depends_on:
       - redis
       - bas
@@ -64,14 +75,14 @@ services:
     ports:
       - 3003:3003
     environment:
-      - NODE_ENV=production
-      - BAS_APP_PORT=3003
-      - BAS_BATTLENET_REGION=${SC2PTE_BATTLENET_REGION}
-      - BAS_BATTLENET_CLIENT_ID=${SC2PTE_BATTLENET_CLIENT_ID}
-      - BAS_BATTLENET_CLIENT_SECRET=${SC2PTE_BATTLENET_CLIENT_SECRET}
-      - BAS_REDIS_ENABLE=true
-      - BAS_REDIS_HOST=${SC2PTE_REDIS_HOST}
-      - BAS_REDIS_DB=2
+      NODE_ENV: production
+      BAS_APP_PORT: 3003
+      BAS_BATTLENET_REGION: ${SC2PTE_BATTLENET_REGION}
+      BAS_BATTLENET_CLIENT_ID: ${SC2PTE_BATTLENET_CLIENT_ID}
+      BAS_BATTLENET_CLIENT_SECRET: ${SC2PTE_BATTLENET_CLIENT_SECRET}
+      BAS_REDIS_ENABLE: true
+      BAS_REDIS_HOST: ${SC2PTE_REDIS_HOST}
+      BAS_REDIS_DB: 2
     depends_on:
       - redis
 
